@@ -1,35 +1,46 @@
 
-import React, {useState , useEffect} from 'react' 
-import logo from './logo.svg';
-import Carde from './Carde'
-import './App.css';
-
+import React, { useEffect, useState } from "react";
+import "./App.css";
 function App() {
-  const [timeLeft, setTimeLeft] = useState(calculateTimeLeft());
+  const calculateTimeLeft = () => {
+    let year = new Date().getFullYear();
+    let difference = +new Date(`${year}-10-1`) - +new Date();
+    let timeLeft = {};
+    if (difference > 0) {
+      timeLeft = {
+        days: Math.floor(difference / (1000 * 60 * 60 * 24)),
+        hours: Math.floor((difference / (1000 * 60 * 60)) % 24),
+        minutes: Math.floor((difference / 1000 / 60) % 60),
+        seconds: Math.floor((difference / 1000) % 60),
+      };
+    }
+    return timeLeft;
+  };
+
+  let [timeLeft, setTimeLeft] = useState(calculateTimeLeft());
+  
+  
 
   useEffect(() => {
-    const timer = setTimeout(() => {
+    setTimeout(() => {
       setTimeLeft(calculateTimeLeft());
     }, 1000);
   });
-  const timerComponents = [];
-
-Object.keys(timeLeft).forEach((interval) => {
-  if (!timeLeft[interval]) {
-    return;
-  }
-
-  timerComponents.push(
-    <span>
-      {timeLeft[interval]} {interval}{" "}
-    </span>
-  );
-});
-const [timeLeft, setTimeLeft] = useState(calculateTimeLeft());
-const [year] = useState(new Date().getFullYear());
+  let timerComponents = [];
+  Object.keys(timeLeft).forEach((interval) => {
+    if (!timeLeft[interval]) {
+      return;
+    }
+    timerComponents.push(
+      <span>
+        {timeLeft[interval]} {interval}{" "}
+      </span>
+    );
+  });
   return (
-    <Carde/>
+    <div>
+     <h1>{timerComponents.length ? timerComponents : <span>The goal was completed</span>}</h1> 
+    </div>
   );
 }
-
 export default App;
